@@ -126,7 +126,7 @@ Automatic merge failed; fix conflicts and then commit the result.
 > hint: invocation.
 > fatal: Need to specify how to reconcile divergent branches.
 > ~~~
-> For this lesson, we'll use the historical defauly option: `pull.rebase false`. 
+> For this lesson, we'll use the historical default option: `pull.rebase false`. 
 > ~~~
 > $ git config pull.rebase false
 > ~~~
