@@ -54,7 +54,7 @@ $ git init
 ~~~
 {: .language-bash}
 
-If you remember back to the earlier [episode](../04-changes/) where we added and
+If you remember back to the earlier [episode](../11-git-changes/) where we added and
 committed our earlier work on `index.md`, we had a diagram of the local repository
 which looked like this:
 

@@ -20,18 +20,10 @@ page.root}}{% link reference.md %}#conflict) by giving us tools to [resolve]({{
 page.root }}{% link reference.md %}#resolve) overlapping changes.
 
 To see how we can resolve conflicts, we must first create one. The file
-`index.md` currently looks something like this in both partners' copies of our
-`simple-site` repository:
+`index.md` currently looks something like this on both your computer and your
+GitHub repository:
 
 ~~~
-$ cat index.md
-~~~
-{: .language-bash}
-
-~~~
----
-title: Home
----
 # Seth Erickson
 
 I am a data services librarian at UCSB.
@@ -45,108 +37,26 @@ See my [reading list](reading-list.html).
 ~~~
 {: .output}
 
-What if the collaborator adds their own biographical details to the files:
-~~~
-$ nano index.md
-$ cat index.md
-~~~
-{: .language-bash}
+What if you make changes to the file directly through GitHub. From the main page
+for the repo, click on `index.md` in the file list, then click on the pencil icon
+to edit the file.
 
-~~~
----
-title: Home
----
+![GitHub edit file interface](../fig/edit-index.png)
 
-# Jon Jablonski
-
-I am the Directory of the DREAM Lab.
-
-# Seth Erickson
-
-I am a data services librarian at UCSB.
-
-My responsibilities include:
-
-- Teaching Carpentry Workshops
-- Helping students learn Git
-
-See my [reading list](reading-list.html).
-~~~
-{: .output}
-
-and then push the change to GitHub:
-
-~~~
-$ git add index.md
-$ git commit -m "Add Jon to index.md"
-~~~
-{: .language-bash}
-
-~~~
-[main 5ae9631] Add Jon to index.md
- 1 file changed, 1 insertion(+)
-~~~
-{: .output}
-
-~~~
-$ git push origin main
-~~~
-{: .language-bash}
-
-~~~
-Enumerating objects: 5, done.
-Counting objects: 100% (5/5), done.
-Delta compression using up to 8 threads
-Compressing objects: 100% (3/3), done.
-Writing objects: 100% (3/3), 331 bytes | 331.00 KiB/s, done.
-Total 3 (delta 2), reused 0 (delta 0)
-remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
-To https://github.com/user/simple-site.git
-   29aba7c..dabb4c8  main -> main
-~~~
-{: .output}
-
-Now let's have the owner
-make a different change to their copy
-*without* updating from GitHub:
+Make a change on the first line of the file and then click "Commit". Now make a
+different change to your *local* copy of the file, without.
 
 ~~~
 $ nano index.md
-$ cat index.md
-~~~
-{: .language-bash}
-
-Let's use `##` instead of `#` to use a smaller font size in the heading:
-
-~~~
-## Seth Erickson
-
-I am a data services librarian at UCSB.
-
-My responsibilities include:
-
-- Teaching Carpentry Workshops
-- Helping students learn Git
-
-See my [reading list](reading-list.html).
-~~~
-{: .output}
-
-We can commit the change locally:
-
-~~~
 $ git add index.md
-$ git commit -m "use smaller heading"
+$ git commit -m "another change"
 ~~~
 {: .language-bash}
 
-~~~
-[main 07ebc69] use smaller heading
- 1 file changed, 1 insertion(+)
-~~~
-{: .output}
+At this point, your local repository and the repository on GitHub have *diverged*: HEAD
+refers to a different commit for each. This is is the making a of a conflict. 
 
-but Git won't let us push it to GitHub:
+What happens when we try to `push` our repository to GitHub?
 
 ~~~
 $ git push origin main
@@ -167,10 +77,10 @@ hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 
 ![The Conflicting Changes](../fig/conflict.svg)
 
-Git rejects the push because it detects that the remote repository has new updates that have not been
-incorporated into the local branch.
-What we have to do is pull the changes from GitHub,
-[merge]({{ page.root }}{% link reference.md %}#merge) them into the copy we're currently working in, and then push that.
+Git rejects the push because it detects that the remote repository has new
+updates that have not been incorporated into the local branch. What we have to
+do is pull the changes from GitHub, [merge]({{ page.root }}{% link reference.md
+%}#merge) them into the copy we're currently working in, and then push that.
 Let's start by pulling:
 
 ~~~
@@ -192,6 +102,37 @@ CONFLICT (content): Merge conflict in index.md
 Automatic merge failed; fix conflicts and then commit the result.
 ~~~
 {: .output}
+
+> ## Configuring how Git reconcile divergent branches
+> When you run `git pull` on a diverged branch for the first time, you may see
+> an error message like this:
+> ~~~
+> $ git pull origin main
+> ~~~
+> {: .language-bash}
+> 
+> ~~~
+> hint: You have divergent branches and need to specify how to reconcile them.
+> hint: You can do so by running one of the following commands sometime before
+> hint: your next pull:
+> hint: 
+> hint:   git config pull.rebase false  # merge
+> hint:   git config pull.rebase true   # rebase
+> hint:   git config pull.ff only       # fast-forward only
+> hint: 
+> hint: You can replace "git config" with "git config --global" to set a default
+> hint: preference for all repositories. You can also pass --rebase, --no-rebase,
+> hint: or --ff-only on the command line to override the configured default per
+> hint: invocation.
+> fatal: Need to specify how to reconcile divergent branches.
+> ~~~
+> For this lesson, we'll use the historical defauly option: `pull.rebase false`. 
+> ~~~
+> $ git config pull.rebase false
+> ~~~
+> {: .language-bash}
+{: .callout}
+
 
 The `git pull` command updates the local repository to include those changes
 already included in the remote repository. After the changes from remote branch
